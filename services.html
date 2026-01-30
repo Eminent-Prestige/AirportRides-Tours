@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Services | Majusto Shuttle & Tours</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="main-header">
+    <div class="logo">
+        <span class="logo-mark">M</span>
+        <div class="logo-text">
+            <h1>Majusto Shuttle & Tours</h1>
+            <p>Your journey starts with us</p>
+        </div>
+    </div>
+    <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html" class="active">Services</a>
+        <a href="booking.html">Booking</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+
+<main class="content-wrapper">
+    <section class="page-header">
+        <h2>Our Services</h2>
+        <p>Reliable transportation from OR Tambo to anywhere you need to go.</p>
+    </section>
+
+    <section class="services-grid">
+        <article class="service-card">
+            <h3>Airport Transfers</h3>
+            <p>Pickups & drop-offs from OR Tambo International Airport.</p>
+        </article>
+
+        <article class="service-card">
+            <h3>Hotel Transfers</h3>
+            <p>Transport to all major hotels and guesthouses in Johannesburg.</p>
+        </article>
+
+        <article class="service-card">
+            <h3>Business Travel</h3>
+            <p>Professional transport for meetings, conferences and events.</p>
+        </article>
+
+        <article class="service-card">
+            <h3>City-to-City Trips</h3>
+            <p>Long-distance trips available on request.</p>
+        </article>
+
+        <article class="service-card">
+            <h3>Tours & Sightseeing</h3>
+            <p>Custom tours around Johannesburg and local attractions.</p>
+        </article>
+
+        <article class="service-card">
+            <h3>Dynamic Pricing</h3>
+            <p>Pricing based on distance, time and route.</p>
+        </article>
+    </section>
+
+    <section class="cta-strip">
+        <div class="cta-text">
+            <h3>Ready to book?</h3>
+            <p>Send your trip details and get confirmation instantly.</p>
+        </div>
+        <a href="booking.html" class="btn btn-light">Book Now</a>
+    </section>
+</main>
+
+<footer class="main-footer">
+    <p>&copy; <span id="year"></span> Majusto Shuttle & Tours</p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

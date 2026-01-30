@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Majusto Shuttle & Tours | Your journey starts with us</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="logo">
+        <span class="logo-mark">M</span>
+        <div class="logo-text">
+            <h1>Majusto Shuttle & Tours</h1>
+            <p>Your journey starts with us</p>
+        </div>
+    </div>
+    <nav class="nav-links">
+        <a href="index.html" class="active">Home</a>
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="booking.html">Booking</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h2>Reliable Airport Transfers from OR Tambo</h2>
+        <p>Safe, professional and comfortable shuttle services across Johannesburg.</p>
+        <div class="hero-actions">
+            <a href="booking.html" class="btn btn-primary">Book a Shuttle</a>
+            <a href="https://wa.me/27665922166" target="_blank" class="btn btn-secondary">Chat on WhatsApp</a>
+        </div>
+    </div>
+</section>
+
+<section class="quote-calculator" style="margin: -50px auto 2rem; position: relative; z-index: 10;">
+    <div style="background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.15); max-width: 900px; margin: 0 auto;">
+        <h3 style="margin-bottom: 1.5rem; text-align: center; color: var(--green);">Get an Instant Quote</h3>
+        
+        <div class="calculator-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            <div class="input-group" style="position: relative;">
+                <label>Pickup Location</label>
+                <input type="text" id="pickup" placeholder="Type location..." autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                <ul id="pickupSuggestions" class="suggestions-list"></ul>
+            </div>
+
+            <div class="input-group" style="position: relative;">
+                <label>Destination</label>
+                <input type="text" id="dropoff" placeholder="Type location..." autocomplete="off" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                <ul id="dropoffSuggestions" class="suggestions-list"></ul>
+            </div>
+        </div>
+
+        <button onclick="calculatePrice()" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Check Price</button>
+
+        <div id="resultBox" class="result-box" style="display:none; margin-top: 1.5rem;">
+            <p style="text-align:center; font-weight: bold;">Distance: <span id="distanceText">0 km</span></p>
+            
+            <div id="priceOptions" class="price-options-container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;"></div>
+            
+            <a href="booking.html" class="btn btn-light" style="display: block; text-align: center; margin-top: 1rem; border: 1px solid var(--gold);">Proceed to Booking</a>
+        </div>
+
+        <div id="map" style="height: 0px; opacity: 0;"></div>
+    </div>
+</section>
+
+<section class="highlights">
+    <div class="highlight-card">
+        <h3>Based at OR Tambo</h3>
+        <p>Fast, reliable and familiar airport transfers for both local and international travellers.</p>
+    </div>
+    <div class="highlight-card">
+        <h3>Mercedes-Benz Fleet</h3>
+        <p>Travel in comfort with Mercedes-Benz Vito & E-Class vehicles.</p>
+    </div>
+    <div class="highlight-card">
+        <h3>Dynamic Pricing</h3>
+        <p>Distance, time and route-based pricing for fair customised quotes.</p>
+    </div>
+</section>
+
+<section class="cta-strip">
+    <div class="cta-text">
+        <h3>Need a shuttle today?</h3>
+        <p>Same-day bookings welcome. Quick WhatsApp confirmation.</p>
+    </div>
+    <a href="booking.html" class="btn btn-light">Make a Booking</a>
+</section>
+
+<footer class="main-footer">
+    <p>&copy; <span id="year"></span> Majusto Shuttle & Tours</p>
+</footer>
+
+<script>
+document.getElementById('year').textContent = new Date().getFullYear();
+
+// --- VARIABLES ---
+let map;
+let startCoords = null;
+let endCoords = null;
+
+// Pricing Rates
+const RATES = { economy: 35, vito: 50, vip: 75 };
+
+document.addEventListener('DOMContentLoaded', function() {
+    map = L.map('map').setView([-26.1367, 28.2411], 11);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+});
+
+// --- AUTOCOMPLETE LOGIC ---
+const pickupInput = document.getElementById('pickup');
+const dropoffInput = document.getElementById('dropoff');
+const pickupList = document.getElementById('pickupSuggestions');
+const dropoffList = document.getElementById('dropoffSuggestions');
+
+pickupInput.addEventListener('input', () => handleInput(pickupInput, pickupList, 'start'));
+dropoffInput.addEventListener('input', () => handleInput(dropoffInput, dropoffList, 'end'));
+
+document.addEventListener('click', (e) => {
+    if (e.target !== pickupInput) pickupList.style.display = 'none';
+    if (e.target !== dropoffInput) dropoffList.style.display = 'none';
+});
+
+let debounceTimer;
+
+function handleInput(inputElement, listElement, type) {
+    clearTimeout(debounceTimer);
+    const query = inputElement.value;
+    if (query.length < 3) { listElement.style.display = 'none'; return; }
+
+    debounceTimer = setTimeout(() => { fetchSuggestions(query, listElement, inputElement, type); }, 300);
+}
+
+async function fetchSuggestions(query, listElement, inputElement, type) {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=za&addressdetails=1&limit=5`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        listElement.innerHTML = '';
+        
+        if (data.length > 0) {
+            listElement.style.display = 'block';
+            data.forEach(place => {
+                const li = document.createElement('li');
+                li.innerHTML = `<strong>${place.name || place.address.road}</strong><br><span style="font-size:0.8em; color:#666">${place.display_name}</span>`;
+                li.style.padding = "8px";
+                li.style.cursor = "pointer";
+                li.style.borderBottom = "1px solid #eee";
+                
+                li.onclick = () => {
+                    inputElement.value = place.display_name;
+                    const coords = [parseFloat(place.lat), parseFloat(place.lon)];
+                    if (type === 'start') startCoords = coords;
+                    if (type === 'end') endCoords = coords;
+                    listElement.style.display = 'none';
+                };
+                listElement.appendChild(li);
+            });
+        }
+    } catch (error) { console.error(error); }
+}
+
+// --- CALCULATION LOGIC ---
+async function calculatePrice() {
+    if (!startCoords || !endCoords) { alert("Please select locations from the list."); return; }
+
+    const url = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=false`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.code === "Ok") {
+            const distanceMeters = data.routes[0].distance;
+            const distanceKm = (distanceMeters / 1000).toFixed(1);
+
+            // Prices
+            const priceEco = Math.ceil(distanceKm * RATES.economy);
+            const priceVito = Math.ceil(distanceKm * RATES.vito);
+            const priceVIP = Math.ceil(distanceKm * RATES.vip);
+
+            document.getElementById('resultBox').style.display = "block";
+            document.getElementById('distanceText').innerText = distanceKm + " km";
+
+            // Inject Cards
+            document.getElementById('priceOptions').innerHTML = `
+                <div class="price-card" style="border:1px solid #ccc; padding:10px; text-align:center; border-radius:5px;">
+                    <h4>Standard</h4>
+                    <span style="font-weight:bold; font-size:1.1em">R${priceEco}</span>
+                </div>
+                <div class="price-card" style="border:2px solid var(--green); background:#f0fff4; padding:10px; text-align:center; border-radius:5px;">
+                    <h4 style="color:var(--green)">Business</h4>
+                    <span style="font-weight:bold; font-size:1.1em">R${priceVito}</span>
+                </div>
+                <div class="price-card" style="border:1px solid #ccc; padding:10px; text-align:center; border-radius:5px;">
+                    <h4>VIP</h4>
+                    <span style="font-weight:bold; font-size:1.1em">R${priceVIP}</span>
+                </div>
+            `;
+        }
+    } catch (error) { alert("Could not calculate route."); }
+}
+</script>
+
+</body>
+</html>

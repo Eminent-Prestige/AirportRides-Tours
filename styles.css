@@ -1,0 +1,455 @@
+/* General reset-ish */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: #f7f7f7;
+    color: #111;
+    line-height: 1.6;
+}
+
+/* Colour palette */
+:root {
+    --green: #0a8f48;
+    --dark-green: #066634;
+    --gold: #c9a24b;
+    --black: #111111;
+    --white: #ffffff;
+    --light-bg: #f4f4f4;
+}
+
+/* Header */
+.main-header {
+    background: var(--black);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 5vw;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.logo-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), var(--gold));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--white);
+}
+
+.logo-text h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.logo-text p {
+    font-size: 0.8rem;
+    color: #dddddd;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.7rem;
+    border-radius: 999px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.nav-links a:hover {
+    background: var(--green);
+}
+
+.nav-links a.active {
+    background: var(--gold);
+    color: var(--black);
+}
+
+/* Hero */
+.hero {
+    position: relative;
+    min-height: 60vh;
+    padding: 5rem 5vw;
+    background-image: url('johannesburg-airport-jnb-1.jpg'); /* replace with a real image later */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.4));
+}
+
+.hero-content {
+    position: relative;
+    max-width: 600px;
+    color: var(--white);
+}
+
+.hero-content h2 {
+    font-size: 2rem;
+    margin-bottom: 0.8rem;
+}
+
+.hero-content p {
+    margin-bottom: 1.2rem;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.6rem 1.4rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 2px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.btn-primary {
+    background: var(--green);
+    color: var(--white);
+    border-color: var(--green);
+}
+
+.btn-primary:hover {
+    background: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--white);
+    border-color: var(--white);
+}
+
+.btn-secondary:hover {
+    background: var(--white);
+    color: var(--black);
+}
+
+.btn-light {
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--white);
+}
+
+.btn-light:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+/* Highlights */
+.highlights {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.4rem;
+    padding: 2.5rem 5vw;
+    background: var(--light-bg);
+}
+
+.highlight-card {
+    background: var(--white);
+    padding: 1.4rem;
+    border-radius: 0.8rem;
+    border: 1px solid #e2e2e2;
+}
+
+.highlight-card h3 {
+    margin-bottom: 0.6rem;
+    color: var(--green);
+}
+
+/* CTA strip */
+.cta-strip {
+    background: var(--black);
+    color: var(--white);
+    padding: 1.5rem 5vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.cta-text h3 {
+    margin-bottom: 0.3rem;
+}
+
+/* General content wrapper */
+.content-wrapper {
+    padding: 2.5rem 5vw;
+}
+
+/* Page header */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-header h2 {
+    font-size: 1.7rem;
+    margin-bottom: 0.4rem;
+}
+
+/* Two-column layout */
+.two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* Lists */
+.styled-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.5rem;
+}
+
+.styled-list li {
+    margin-bottom: 0.4rem;
+    position: relative;
+    padding-left: 1.2rem;
+}
+
+.styled-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+}
+
+/* Info panel */
+.info-panel {
+    margin-top: 2rem;
+    padding: 1.2rem 1.4rem;
+    border-radius: 0.8rem;
+    background: #fffdf4;
+    border: 1px solid #f0e1a4;
+}
+
+/* Services grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.4rem;
+}
+
+.service-card {
+    background: var(--white);
+    border-radius: 0.8rem;
+    padding: 1.4rem;
+    border: 1px solid #e2e2e2;
+}
+
+.service-card h3 {
+    margin-bottom: 0.5rem;
+    color: var(--green);
+}
+
+/* Form */
+.form-section {
+    max-width: 750px;
+}
+
+.booking-form {
+    background: var(--white);
+    padding: 1.6rem;
+    border-radius: 0.8rem;
+    border: 1px solid #e2e2e2;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.4rem;
+    border: 1px solid #cccccc;
+    font-size: 0.95rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.small-text {
+    font-size: 0.8rem;
+    color: #666666;
+    margin-bottom: 0.8rem;
+}
+
+/* Map placeholder */
+.map-placeholder {
+    border-radius: 0.8rem;
+    overflow: hidden; /* This keeps the map corners rounded */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Adds a nice subtle shadow */
+    height: 300px; /* Forces the container to be the right height */
+}
+
+.map-placeholder iframe {
+    width: 100%;
+    height: 100%;
+    display: block; /* Removes tiny gap at the bottom */
+}
+/* Footer */
+.main-footer {
+    background: #101010;
+    color: #cccccc;
+    text-align: center;
+    padding: 1rem 5vw;
+    margin-top: 2rem;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    .hero {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .cta-strip {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+/* Calculator Styles */
+.quote-calculator {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.input-wrapper {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    background: var(--black);
+    color: var(--gold);
+    border: none;
+    padding: 0 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+.result-box {
+    background: #fdfdfd;
+    border: 2px solid var(--gold);
+    padding: 1rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.result-box h3 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+}
+
+.note {
+    font-size: 0.8rem;
+    color: #666;
+}
+/* Suggestions Dropdown */
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    list-style: none;
+    display: none; /* Hidden by default */
+}
+
+.suggestions-list li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}
+
+.suggestions-list li:hover {
+    background-color: #f0f0f0;
+    color: var(--green);
+}
+
+.suggestions-list li strong {
+    display: block;
+    color: var(--black);
+}
+
+.suggestions-list li span {
+    font-size: 0.8rem;
+    color: #666;
+}
