@@ -1,398 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Booking | Majusto Shuttle & Tours</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <link rel="stylesheet" href="styles.css">
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <meta charset="UTF-8">
+  <title>Booking | Majusto Express Shuttles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        /* Suggestions Dropdown */
-        .suggestions-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: white;
-            border: 1px solid #ddd;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            list-style: none;
-            display: none;
-        }
-        .suggestions-list li {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9rem;
-        }
-        .suggestions-list li:hover {
-            background-color: #f0f0f0;
-            color: var(--green);
-        }
+  <link rel="stylesheet" href="styles.css">
 
-        /* Pricing Options Container */
-        .price-options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-            display: none; 
-        }
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        /* Individual Price Card */
-        .price-card {
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: #f9f9f9;
-        }
-        .price-card h4 {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            color: #555;
-        }
-        .price-card .price {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--black);
-            display: block;
-        }
-        .price-card small {
-            font-size: 0.7rem;
-            color: #888;
-        }
-        /* Hover Effect */
-        .price-card:hover {
-            border-color: var(--gold);
-            background: #fffdf5;
-        }
-        /* SELECTED State (Active) */
-        .price-card.selected {
-            border-color: var(--green);
-            background: #e8f5e9;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .price-card.selected h4 {
-            color: var(--green);
-        }
-    </style>
+  <style>
+    /* Suggestions Dropdown */
+    .suggestions-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background: white;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      list-style: none;
+      display: none;
+      padding: 0;
+      margin: 0;
+    }
+    .suggestions-list li {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+    .suggestions-list li:hover {
+      background-color: #f0f0f0;
+      color: var(--green);
+    }
+
+    /* Pricing Options Container */
+    .price-options-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+
+    /* Individual Price Card */
+    .price-card {
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: #f9f9f9;
+    }
+    .price-card h4 {
+      font-size: 0.9rem;
+      margin: 0 0 5px;
+      color: #555;
+    }
+    .price-card .price {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--black);
+      display: block;
+      margin: 2px 0;
+    }
+    .price-card small {
+      font-size: 0.75rem;
+      color: #888;
+      display: block;
+    }
+    .price-card:hover {
+      border-color: var(--gold);
+      background: #fffdf5;
+    }
+    .price-card.selected {
+      border-color: var(--green);
+      background: #e8f5e9;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .price-card.selected h4 {
+      color: var(--green);
+    }
+  </style>
 </head>
+
 <body>
 
 <header class="main-header">
-    <div class="logo">
-        <span class="logo-mark">M</span>
-        <div class="logo-text">
-            <h1>Majusto Shuttle & Tours</h1>
-            <p>Your journey starts with us</p>
-        </div>
+  <div class="logo">
+    <span class="logo-mark">M</span>
+    <div class="logo-text">
+      <h1>Majusto Express Shuttles</h1>
+      <p>Your journey starts with us</p>
     </div>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
-        <a href="booking.html" class="active">Booking</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="booking.html" class="active">Booking</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 </header>
 
 <main class="content-wrapper">
-    <section class="page-header">
-        <h2>Make a Booking</h2>
-        <p>Calculate your trip and send details directly via WhatsApp.</p>
-    </section>
+  <section class="page-header">
+    <h2>Make a Booking</h2>
+    <p>Calculate your trip and send details directly via WhatsApp.</p>
+  </section>
 
-    <section class="form-section">
-        <form id="bookingForm" class="booking-form">
+  <section class="form-section">
+    <form id="bookingForm" class="booking-form">
 
-            <div class="form-group">
-                <label for="fullName">Full Name *</label>
-                <input type="text" id="fullName" required>
-            </div>
+      <div class="form-group">
+        <label for="fullName">Full Name *</label>
+        <input type="text" id="fullName" required>
+      </div>
 
-            <div class="form-group">
-                <label for="phone">Phone *</label>
-                <input type="tel" id="phone" placeholder="+27..." required>
-            </div>
+      <div class="form-group">
+        <label for="phone">Phone *</label>
+        <input type="tel" id="phone" placeholder="+27..." required>
+      </div>
 
-            <div class="form-group" style="position: relative;">
-                <label for="pickup">Pickup Location * <a href="#" onclick="useMyLocation(event)" style="font-size: 0.8rem; color: var(--gold); text-decoration: none; margin-left: 10px;">📍 Use My Location</a>
-                </label>
-                <input type="text" id="pickup" required autocomplete="off" placeholder="Type to search (e.g. OR Tambo)">
-                <ul id="pickupSuggestions" class="suggestions-list"></ul>
-            </div>
+      <div class="form-group">
+        <label for="email">Email (optional)</label>
+        <input type="email" id="email" placeholder="you@example.com">
+      </div>
+<div class="form-group">
+  <label for="serviceType">Service Type *</label>
+  <select id="serviceType" required>
+    <option value="airport">Airport Transfer</option>
+    <option value="hotel">Hotel Transfer</option>
+    <option value="business">Business Travel</option>
+    <option value="city">City-to-City Trip</option>
+    <option value="tour">Tour / Sightseeing</option>
+  </select>
+</div>
 
-            <div class="form-group" style="position: relative;">
-                <label for="dropoff">Drop-Off Location *</label>
-                <input type="text" id="dropoff" required autocomplete="off" placeholder="Type to search (e.g. Sandton)">
-                <ul id="dropoffSuggestions" class="suggestions-list"></ul>
-            </div>
+<div class="form-group" id="tourTypeGroup" style="display:none;">
+  <label for="tourType">Tour Type</label>
+  <select id="tourType">
+    <option value="Johannesburg City Tour">Johannesburg City Tour</option>
+    <option value="Soweto Tour">Soweto Tour</option>
+    <option value="Apartheid Museum">Apartheid Museum</option>
+    <option value="Shopping / Mall Tour">Shopping / Mall Tour</option>
+    <option value="Custom (Describe in Notes)">Custom (Describe in Notes)</option>
+  </select>
+</div>
 
-            <div class="form-group">
-                <button type="button" class="btn btn-secondary" onclick="calculatePrice()" style="width: 100%; font-size: 0.9rem;">🔄 Check Price Estimate</button>
-            </div>
+<div class="form-group" id="notesGroup" style="display:none;">
+  <label for="notes">Notes (optional)</label>
+  <textarea id="notes" rows="3" placeholder="Add stops, flight number, tour requests, luggage info..."></textarea>
+</div>
 
-            <div id="resultBox" class="result-box" style="display:none; margin-bottom: 1.5rem; background: #fff;">
-                <p style="text-align:center;">Total Distance: <span id="distanceText" style="font-weight: bold;">0 km</span></p>
-                
-                <div id="priceOptions" class="price-options-container"></div>
-                
-                <p style="font-size: 0.75rem; color: #666; text-align:center; margin-top:10px;">
-                    *Tap a price to select it. Final quote on WhatsApp.
-                </p>
-            </div>
+      <div class="form-group" style="position: relative;">
+        <label for="pickup">
+          Pickup Location *
+          <a href="#" onclick="useMyLocation(event)"
+             style="font-size: 0.8rem; color: var(--gold); text-decoration: none; margin-left: 10px;">
+            📍 Use My Location
+          </a>
+        </label>
+        <input type="text" id="pickup" required autocomplete="off" placeholder="Type to search (e.g. OR Tambo)">
+        <ul id="pickupSuggestions" class="suggestions-list"></ul>
+      </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="date">Date *</label>
-                    <input type="date" id="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="time">Time *</label>
-                    <input type="time" id="time" required>
-                </div>
-            </div>
+      <div class="form-group" style="position: relative;">
+        <label for="dropoff">Drop-Off Location *</label>
+        <input type="text" id="dropoff" required autocomplete="off" placeholder="Type to search (e.g. Sandton)">
+        <ul id="dropoffSuggestions" class="suggestions-list"></ul>
+      </div>
 
-            <div class="form-group">
-                <label for="passengers">Passengers *</label>
-                <input type="number" id="passengers" min="1" value="1" required>
-            </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-primary" onclick="calculatePrice()"
+                style="width: 100%; font-size: 0.95rem;">
+           Check Price Estimate
+        </button>
+      </div>
 
-            <div class="form-group">
-                <label for="vehicle">Preferred Vehicle</label>
-                <select id="vehicle">
-                    <option value="Any">Any</option>
-                    <option value="Mercedes-Benz Vito">Mercedes-Benz Vito</option>
-                    <option value="Mercedes-Benz E-Class">Mercedes-Benz E-Class</option>
-                </select>
-            </div>
+      <div id="resultBox" class="result-box" style="display:none; margin-bottom: 1.5rem; background: #fff;">
+        <p style="text-align:center; margin: 0.6rem 0;">
+          Total Distance: <span id="distanceText" style="font-weight: 800;">0 km</span>
+        </p>
 
-            <div id="map" style="height: 300px; width: 100%; border-radius: 8px; margin-bottom: 20px; z-index: 1;"></div>
+        <!-- Message area (for long distance) -->
+        <div id="pricingMessage" style="display:none; margin: 10px 0;"></div>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Confirm & Send WhatsApp</button>
+        <!-- Price cards -->
+        <div id="priceOptions" class="price-options-container"></div>
 
-        </form>
-    </section>
+        <p id="smallNote" style="font-size: 0.75rem; color: #666; text-align:center; margin-top:10px;">
+          *Tap a price to select it. Final quote confirmed after request.
+        </p>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Date *</label>
+          <input type="date" id="date" required>
+        </div>
+        <div class="form-group">
+          <label for="time">Time *</label>
+          <input type="time" id="time" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="passengers">Passengers *</label>
+        <input type="number" id="passengers" min="1" value="1" required>
+      </div>
+
+      <div class="form-group">
+        <label for="vehicle">Preferred Vehicle</label>
+        <select id="vehicle">
+          <option value="Any">Any</option>
+          <option value="Mercedes-Benz Vito">Mercedes-Benz Vito</option>
+          <option value="Mercedes-Benz E-Class">Mercedes-Benz E-Class</option>
+        </select>
+      </div>
+
+      <div id="map" style="height: 300px; width: 100%; border-radius: 8px; margin-bottom: 20px; z-index: 1;"></div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+        Confirm & Send WhatsApp
+      </button>
+
+    </form>
+  </section>
 </main>
 
 <footer class="main-footer">
-    <p>&copy; <span id="year"></span> Majusto Shuttle & Tours</p>
+  <p>&copy; <span id="year"></span> Majusto Express Shuttles</p>
 </footer>
 
-<script>
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// --- GLOBAL VARIABLES ---
-let map;
-let routeLayer;
-let startCoords = null;
-let endCoords = null;
-let selectedVehicle = "Not Selected"; 
-let selectedPrice = "Pending"; 
-
-// --- PRICING RATES (Per KM) ---
-const RATES = {
-    economy: 35, 
-    vito: 50,    
-    vip: 75      
-};
-
-// --- INITIALIZE MAP ---
-document.addEventListener('DOMContentLoaded', function() {
-    map = L.map('map').setView([-26.1367, 28.2411], 10); 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-});
-
-// --- AUTOCOMPLETE LOGIC ---
-const pickupInput = document.getElementById('pickup');
-const dropoffInput = document.getElementById('dropoff');
-const pickupList = document.getElementById('pickupSuggestions');
-const dropoffList = document.getElementById('dropoffSuggestions');
-
-pickupInput.addEventListener('input', () => handleInput(pickupInput, pickupList, 'start'));
-dropoffInput.addEventListener('input', () => handleInput(dropoffInput, dropoffList, 'end'));
-
-document.addEventListener('click', function(e) {
-    if (e.target !== pickupInput) pickupList.style.display = 'none';
-    if (e.target !== dropoffInput) dropoffList.style.display = 'none';
-});
-
-let debounceTimer;
-
-function handleInput(inputElement, listElement, type) {
-    clearTimeout(debounceTimer);
-    const query = inputElement.value;
-    if (query.length < 3) { listElement.style.display = 'none'; return; }
-    debounceTimer = setTimeout(() => { fetchSuggestions(query, listElement, inputElement, type); }, 300);
-}
-
-async function fetchSuggestions(query, listElement, inputElement, type) {
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=za&addressdetails=1&limit=5`;
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        listElement.innerHTML = '';
-        if (data.length > 0) {
-            listElement.style.display = 'block';
-            data.forEach(place => {
-                const li = document.createElement('li');
-                const mainName = place.name || place.address.road || place.address.suburb;
-                li.innerHTML = `<strong>${mainName}</strong><span style="display:block; font-size:0.8em; color:#666;">${place.display_name}</span>`;
-                li.onclick = () => {
-                    inputElement.value = place.display_name;
-                    const coords = [parseFloat(place.lat), parseFloat(place.lon)];
-                    if (type === 'start') startCoords = coords;
-                    if (type === 'end') endCoords = coords;
-                    listElement.style.display = 'none';
-                    L.marker(coords).addTo(map).bindPopup(type === 'start' ? "Pickup" : "Dropoff").openPopup();
-                    map.setView(coords, 13);
-                };
-                listElement.appendChild(li);
-            });
-        }
-    } catch (error) { console.error("Error:", error); }
-}
-
-// --- CALCULATE PRICE (GENERATES CARDS) ---
-async function calculatePrice() {
-    if (!startCoords || !endCoords) {
-        alert("Please select locations from the suggestions list first.");
-        return;
-    }
-
-    const url = `https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=false`;
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.code === "Ok") {
-            const distanceMeters = data.routes[0].distance;
-            const distanceKm = (distanceMeters / 1000).toFixed(1);
-            
-            // Calculate 3 Prices
-            const priceEco = Math.ceil(distanceKm * RATES.economy);
-            const priceVito = Math.ceil(distanceKm * RATES.vito);
-            const priceVIP = Math.ceil(distanceKm * RATES.vip);
-
-            document.getElementById('resultBox').style.display = "block";
-            document.getElementById('distanceText').innerText = distanceKm + " km";
-
-            // Inject Cards HTML
-            const optionsHTML = `
-                <div class="price-card" onclick="selectRide('Economy', ${priceEco}, this)">
-                    <h4>Standard</h4>
-                    <span class="price">R${priceEco}</span>
-                    <small>Toyota/Similar</small>
-                </div>
-
-                <div class="price-card selected" onclick="selectRide('Mercedes Vito', ${priceVito}, this)">
-                    <h4>Business Van</h4>
-                    <span class="price">R${priceVito}</span>
-                    <small>Mercedes Vito</small>
-                </div>
-
-                <div class="price-card" onclick="selectRide('VIP E-Class', ${priceVIP}, this)">
-                    <h4>VIP Class</h4>
-                    <span class="price">R${priceVIP}</span>
-                    <small>Mercedes E-Class</small>
-                </div>
-            `;
-            
-            document.getElementById('priceOptions').innerHTML = optionsHTML;
-            document.getElementById('priceOptions').style.display = "grid";
-
-            // Set default selection
-            selectRide('Mercedes Vito', priceVito, null);
-
-            // Fit map
-            const bounds = L.latLngBounds([startCoords, endCoords]);
-            map.fitBounds(bounds, {padding: [50, 50]});
-        }
-    } catch (error) {
-        alert("Could not calculate route.");
-    }
-}
-
-// --- HANDLE CARD CLICKS ---
-function selectRide(vehicleName, price, cardElement) {
-    selectedVehicle = vehicleName;
-    selectedPrice = "R" + price;
-
-    // Update hidden dropdown
-    const dropdown = document.getElementById('vehicle');
-    if(vehicleName.includes("Vito")) dropdown.value = "Mercedes-Benz Vito";
-    else if(vehicleName.includes("E-Class")) dropdown.value = "Mercedes-Benz E-Class";
-    else dropdown.value = "Any";
-
-    // Update visuals
-    if (cardElement) {
-        document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
-        cardElement.classList.add('selected');
-    }
-}
-
-// --- GPS LOCATION ---
-function useMyLocation(e) {
-    e.preventDefault();
-    if (navigator.geolocation) {
-        pickupInput.placeholder = "Locating...";
-        navigator.geolocation.getCurrentPosition(position => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            startCoords = [lat, lon];
-            pickupInput.value = "Current GPS Location";
-            L.marker(startCoords).addTo(map).bindPopup("Your Location").openPopup();
-            map.setView(startCoords, 14);
-        }, () => { alert("Could not access location."); });
-    } else { alert("Geolocation not supported."); }
-}
-
-// --- WHATSAPP SUBMISSION ---
-const form = document.getElementById('bookingForm');
-
-form.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const name = document.getElementById("fullName").value;
-    const phone = document.getElementById("phone").value;
-    const pickup = document.getElementById("pickup").value;
-    const dropoff = document.getElementById("dropoff").value;
-    const date = document.getElementById("date").value;
-    const time = document.getElementById("time").value;
-    const passengers = document.getElementById("passengers").value;
-
-    const text =
-        `*New Web Booking* 🚐%0A%0A` +
-        `👤 *Name:* ${name}%0A` +
-        `📞 *Phone:* ${phone}%0A` +
-        `📍 *Pickup:* ${pickup}%0A` +
-        `🏁 *Drop-off:* ${dropoff}%0A` +
-        `📅 *Date:* ${date}%0A` +
-        `⏰ *Time:* ${time}%0A` +
-        `👥 *Passengers:* ${passengers}%0A` +
-        `------------------%0A` +
-        `🚗 *Selected Ride:* ${selectedVehicle}%0A` +
-        `💰 *Est. Price:* ${selectedPrice}`;
-
-    const url = `https://wa.me/27665922166?text=${text}`;
-    window.open(url, "_blank");
-});
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>

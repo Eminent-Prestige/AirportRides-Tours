@@ -1,83 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Services | Majusto Shuttle & Tours</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Services | Majusto Express Shuttles</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
 <header class="main-header">
-    <div class="logo">
-        <span class="logo-mark">M</span>
-        <div class="logo-text">
-            <h1>Majusto Shuttle & Tours</h1>
-            <p>Your journey starts with us</p>
-        </div>
+  <div class="logo">
+    <span class="logo-mark">M</span>
+    <div class="logo-text">
+      <h1>Majusto Express Shuttles</h1>
+      <p>Your journey starts with us</p>
     </div>
-    <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="services.html" class="active">Services</a>
-        <a href="booking.html">Booking</a>
-        <a href="contact.html">Contact</a>
-    </nav>
+  </div>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="services.html" class="active">Services</a>
+    <a href="booking.html">Booking</a>
+    <a href="contact.html">Contact</a>
+  </nav>
 </header>
 
 <main class="content-wrapper">
-    <section class="page-header">
-        <h2>Our Services</h2>
-        <p>Reliable transportation from OR Tambo to anywhere you need to go.</p>
-    </section>
 
-    <section class="services-grid">
-        <article class="service-card">
-            <h3>Airport Transfers</h3>
-            <p>Pickups & drop-offs from OR Tambo International Airport.</p>
-        </article>
+  <section class="page-header">
+    <h2>Our Services</h2>
+    <p>Reliable transportation from OR Tambo to anywhere you need to go.</p>
+  </section>
 
-        <article class="service-card">
-            <h3>Hotel Transfers</h3>
-            <p>Transport to all major hotels and guesthouses in Johannesburg.</p>
-        </article>
+  <section class="services-grid">
 
-        <article class="service-card">
-            <h3>Business Travel</h3>
-            <p>Professional transport for meetings, conferences and events.</p>
-        </article>
+    <a class="service-card" href="booking.html?service=airport">
+      <img src="01_Trusted_L.jpg" alt="OR Tambo Airport Transfers">
+      <h3>Airport Transfers</h3>
+      <p>Pickups and drop-offs from OR Tambo International Airport.</p>
+    </a>
 
-        <article class="service-card">
-            <h3>City-to-City Trips</h3>
-            <p>Long-distance trips available on request.</p>
-        </article>
+    <a class="service-card" href="booking.html?service=hotel">
+      <img src="pexels-pavel-danilyuk-8425052.jpg" alt="Hotel Transfers Johannesburg">
+      <h3>Hotel Transfers</h3>
+      <p>Transport to all major hotels and guesthouses in Johannesburg.</p>
+    </a>
 
-        <article class="service-card">
-            <h3>Tours & Sightseeing</h3>
-            <p>Custom tours around Johannesburg and local attractions.</p>
-        </article>
+    <a class="service-card" href="booking.html?service=business">
+      <img src="MJ05.jpeg" alt="Business Travel Transport">
+      <h3>Business Travel</h3>
+      <p>Professional transport for meetings, conferences and events.</p>
+    </a>
 
-        <article class="service-card">
-            <h3>Dynamic Pricing</h3>
-            <p>Pricing based on distance, time and route.</p>
-        </article>
-    </section>
+    <a class="service-card" href="booking.html?service=city">
+      <img src="pexels-jaqor-34169024.jpg" alt="City to City Transport">
+      <h3>City-to-City Trips</h3>
+      <p>Long-distance trips available on request.</p>
+    </a>
 
-    <section class="cta-strip">
-        <div class="cta-text">
-            <h3>Ready to book?</h3>
-            <p>Send your trip details and get confirmation instantly.</p>
-        </div>
-        <a href="booking.html" class="btn btn-light">Book Now</a>
-    </section>
+    <a class="service-card" href="booking.html?service=tour">
+      <img src="MJ03.jpeg" alt="Tours and Sightseeing">
+      <h3>Tours & Sightseeing</h3>
+      <p>Custom tours around Johannesburg and local attractions.</p>
+    </a>
+
+    <a class="service-card" href="booking.html?service=airport">
+      <img src="shaking-hands-feature.jpg" alt="Dynamic Pricing">
+      <h3>Dynamic Pricing</h3>
+      <p>Pricing based on distance, time and route.</p>
+    </a>
+
+  </section>
+
+  <section class="info-panel" style="margin-top: 2rem;">
+    <h3>Operating Hours</h3>
+    <p>
+      Standard: <strong>05:00 – 20:00</strong><br>
+      Earlier / later trips available by arrangement.
+    </p>
+
+    <h3>Base Location</h3>
+    <p>
+      <strong>OR Tambo International Airport</strong><br>
+      Johannesburg
+    </p>
+
+    <h3>Contact</h3>
+    <p>
+      <a href="https://wa.me/27665922166" target="_blank" style="color: var(--green); font-weight:600; text-decoration:none;">
+        WhatsApp: 066 592 2166
+      </a>
+    </p>
+  </section>
+
+  <section class="cta-strip">
+    <div class="cta-text">
+      <h3>Ready to book?</h3>
+      <p>Send your trip details and get confirmation instantly.</p>
+    </div>
+    <a href="booking.html?service=airport" class="btn btn-light">Book Now</a>
+  </section>
+
 </main>
 
-<footer class="main-footer">
-    <p>&copy; <span id="year"></span> Majusto Shuttle & Tours</p>
+<footer class="site-footer">
+  <div class="footer-inner">
+
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <span class="logo-mark">M</span>
+        <div>
+          <strong>Majusto Express Shuttles</strong>
+          <div class="footer-tagline">Your journey starts with us</div>
+        </div>
+      </div>
+      <p class="footer-note">
+        Transfers and tours from OR Tambo International Airport across Johannesburg and beyond.
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <a href="index.html">Home</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="https://wa.me/27665922166" target="_blank">WhatsApp: 066 592 2166</a>
+      <span class="footer-muted">OR Tambo International Airport</span>
+      <span class="footer-muted">Johannesburg, South Africa</span>
+    </div>
+
+    <div class="footer-col">
+      <h4>Hours</h4>
+      <span class="footer-muted">Mon–Sun: 05:00 – 20:00</span>
+      <span class="footer-muted">Same-day bookings available</span>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>© <span id="year"></span> Majusto Express Shuttles</span>
+    <span class="footer-muted">All rights reserved</span>
+  </div>
 </footer>
 
 <script>
-document.getElementById('year').textContent = new Date().getFullYear();
+  const y = document.getElementById("year");
+  if (y) y.textContent = new Date().getFullYear();
 </script>
 
 </body>
