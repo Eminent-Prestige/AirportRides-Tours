@@ -588,3 +588,22 @@ body {
     color: #4b5563; /* Muted grey text */
     text-decoration: none;
 }
+.logo-mark img {
+  width: 50px;    /* Adjust this size to your preference */
+  height: auto;   /* Maintain aspect ratio */
+  object-fit: contain;
+}
+/* Make the logo round */
+.logo-mark {
+  display: inline-block;
+  width: 64px;      /* Ensuring the logo is 64x64 */
+  height: 64px;
+  border-radius: 50%;  /* Make it circular */
+  overflow: hidden;    /* Hide any excess from the square logo */
+}
+
+.logo-mark img {
+  width: 100%;        /* Ensures the image covers the circle properly */
+  height: 100%;
+  object-fit: cover;  /* Ensures the image doesn’t stretch and keeps the aspect ratio */
+}
