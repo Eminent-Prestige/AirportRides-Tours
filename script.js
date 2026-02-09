@@ -136,29 +136,30 @@ function showFixedLongDistancePrices(cityKey, distanceKm) {
   if (cards) {
     cards.style.display = "grid";
     cards.innerHTML = `
-      <div class="price-card" onclick="selectRide('Standard', ${prices.standard}, this)">
-        <h4>Standard</h4>
+      <div class="price-card" onclick="selectRide('Express Sedan (1-3 pax)', ${prices.standard}, this)">
+        <h4>Express Sedan</h4>
         <span class="price">R${prices.standard}</span>
-        <small>Fixed route</small>
+        <small>1–3 pax • Fixed route</small>
       </div>
 
-      <div class="price-card selected" onclick="selectRide('Mercedes Vito', ${prices.vito}, this)">
-        <h4>Business Van</h4>
+      <div class="price-card selected" onclick="selectRide('Express Van (2-6 pax)', ${prices.vito}, this)">
+        <h4>Express Van</h4>
         <span class="price">R${prices.vito}</span>
-        <small>Fixed route</small>
+        <small>2–6 pax • Fixed route</small>
       </div>
 
-      <div class="price-card" onclick="selectRide('VIP E-Class', ${prices.vip}, this)">
-        <h4>VIP Class</h4>
+      <div class="price-card" onclick="selectRide('Express VIP', ${prices.vip}, this)">
+        <h4>Express VIP</h4>
         <span class="price">R${prices.vip}</span>
-        <small>Fixed route</small>
+        <small>Premium • Fixed route</small>
       </div>
     `;
   }
 
   if (note) note.textContent = "Fixed route pricing is confirmed after request.";
 
-  selectRide("Mercedes Vito", prices.vito, null);
+  // default
+  selectRide("Express Van (2-6 pax)", prices.vito, null);
 }
 
 function showShortDistanceUI() {
@@ -181,8 +182,9 @@ function selectRide(vehicleName, price, cardElement) {
 
   const dropdown = document.getElementById('vehicle');
   if (dropdown) {
-    if (vehicleName.includes("Vito")) dropdown.value = "Mercedes-Benz Vito";
-    else if (vehicleName.includes("E-Class")) dropdown.value = "Mercedes-Benz E-Class";
+    if (vehicleName.includes("Van")) dropdown.value = "Express Van (2-6 pax)";
+    else if (vehicleName.includes("VIP")) dropdown.value = "Express VIP";
+    else if (vehicleName.includes("Sedan")) dropdown.value = "Express Sedan (1-3 pax)";
     else dropdown.value = "Any";
   }
 
@@ -192,15 +194,23 @@ function selectRide(vehicleName, price, cardElement) {
   }
 }
 
+
 function getQueryParam(name) {
   const params = new URLSearchParams(window.location.search);
   return params.get(name);
+}
+
+function getService() {
+  const serviceType = document.getElementById("serviceType");
+  return serviceType ? serviceType.value : "";
 }
 
 function updateServiceUI() {
   const serviceType = document.getElementById("serviceType");
   const tourTypeGroup = document.getElementById("tourTypeGroup");
   const notesGroup = document.getElementById("notesGroup");
+  const tourDaysWrap = document.getElementById("tourDaysWrap");
+  const tourDuration = document.getElementById("tourDuration");
 
   if (!serviceType) return;
 
@@ -212,9 +222,14 @@ function updateServiceUI() {
 
     selectedVehicle = "Not Selected";
     selectedPrice = "Quote required";
+
+    if (tourDuration && tourDaysWrap) {
+      tourDaysWrap.style.display = (tourDuration.value === "Multiple days") ? "block" : "none";
+    }
   } else {
     if (tourTypeGroup) tourTypeGroup.style.display = "none";
     if (notesGroup) notesGroup.style.display = "block";
+    if (tourDaysWrap) tourDaysWrap.style.display = "none";
   }
 }
 
@@ -226,12 +241,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const serviceType = document.getElementById("serviceType");
   const service = getQueryParam("service");
-  if (serviceType && service) {
-    serviceType.value = service;
-  }
-  if (serviceType) {
-    serviceType.addEventListener("change", updateServiceUI);
-  }
+  if (serviceType && service) serviceType.value = service;
+
+  if (serviceType) serviceType.addEventListener("change", updateServiceUI);
+
+  const tourDuration = document.getElementById("tourDuration");
+  if (tourDuration) tourDuration.addEventListener("change", updateServiceUI);
+
   updateServiceUI();
 });
 
@@ -297,9 +313,7 @@ async function fetchSuggestions(query, listElement, inputElement, type) {
         listElement.style.display = 'none';
         map.setView(coords, 13);
 
-        const serviceType = document.getElementById("serviceType");
-        const isTour = serviceType && serviceType.value === "tour";
-
+        const isTour = (getService() === "tour");
         selectedVehicle = "Not Selected";
         selectedPrice = isTour ? "Quote required" : "Pending";
         lastDistanceKm = null;
@@ -336,9 +350,7 @@ function useMyLocation(e) {
 
     pickupInput.placeholder = "Type to search (e.g. OR Tambo)";
 
-    const serviceType = document.getElementById("serviceType");
-    const isTour = serviceType && serviceType.value === "tour";
-
+    const isTour = (getService() === "tour");
     selectedVehicle = "Not Selected";
     selectedPrice = isTour ? "Quote required" : "Pending";
     lastDistanceKm = null;
@@ -349,20 +361,35 @@ function useMyLocation(e) {
 }
 
 async function calculatePrice() {
-  const serviceType = document.getElementById("serviceType");
-  const isTour = serviceType && serviceType.value === "tour";
+  const isTour = (getService() === "tour");
 
-  if (!startCoords || !endCoords) {
-    alert("Please select locations from the suggestions list first.");
+  if (!startCoords) {
+    alert("Please select pickup location from the suggestions list first.");
     return;
   }
 
+  // Tours: allow no dropoff (use pickup as dropoff)
+  if (isTour && !endCoords) {
+    endCoords = startCoords;
+    const drop = document.getElementById("dropoff");
+    const pick = document.getElementById("pickup");
+    if (drop && pick && !drop.value.trim()) drop.value = pick.value.trim();
+  }
+
+  if (!isTour && (!startCoords || !endCoords)) {
+    alert("Please select pickup and drop-off from the suggestions list first.");
+    return;
+  }
+
+  // Tours are quoted manually (no transfer pricing)
   if (isTour) {
     selectedVehicle = "Not Selected";
     selectedPrice = "Quote required";
 
-    document.getElementById('resultBox').style.display = "block";
-    document.getElementById('distanceText').innerText = "Tour request";
+    const resultBox = document.getElementById('resultBox');
+    const distanceText = document.getElementById('distanceText');
+    if (resultBox) resultBox.style.display = "block";
+    if (distanceText) distanceText.innerText = "Tour request";
 
     const msg = document.getElementById("pricingMessage");
     const cards = document.getElementById("priceOptions");
@@ -376,16 +403,21 @@ async function calculatePrice() {
             Tour pricing is confirmed after request
           </p>
           <p style="margin:6px 0 0;color:#9a3412;">
-            Please submit your tour details and we will confirm the quote.
+            Submit your tour details and we will confirm the quote.
           </p>
         </div>
       `;
     }
+
     if (cards) {
       cards.style.display = "none";
       cards.innerHTML = "";
     }
+
     if (note) note.textContent = "Quote required for tours.";
+
+    // map view
+    if (map && startCoords) map.setView(startCoords, 12);
 
     return;
   }
@@ -411,11 +443,8 @@ async function calculatePrice() {
       const dropoffText = document.getElementById("dropoff").value;
       const key = matchLongDistanceKey(dropoffText);
 
-      if (key) {
-        showFixedLongDistancePrices(key, distanceKmNum);
-      } else {
-        showLongDistanceUI(distanceKmNum);
-      }
+      if (key) showFixedLongDistancePrices(key, distanceKmNum);
+      else showLongDistanceUI(distanceKmNum);
 
       const bounds = L.latLngBounds([startCoords, endCoords]);
       map.fitBounds(bounds, {padding: [50, 50]});
@@ -461,14 +490,56 @@ async function calculatePrice() {
   }
 }
 
+function buildMessageCompact(data) {
+  // Short, readable, minimal labels, spaced
+  const lines = [];
+
+  lines.push("Web Booking");
+  lines.push("");
+
+  if (data.service) lines.push(`Service: ${data.service}`);
+  if (data.name) lines.push(`Name: ${data.name}`);
+  if (data.phone) lines.push(`Phone: ${data.phone}`);
+
+  lines.push("");
+
+  if (data.pickup) lines.push(`Pickup: ${data.pickup}`);
+  if (data.dropoff) lines.push(`Drop: ${data.dropoff}`);
+
+  if (data.distance) lines.push(`Km: ${data.distance}`);
+
+  lines.push("");
+
+  if (data.date) lines.push(`Date: ${data.date}`);
+  if (data.time) lines.push(`Time: ${data.time}`);
+  if (data.passengers) lines.push(`Pax: ${data.passengers}`);
+
+  if (data.service === "tour") {
+    if (data.tourDestination) lines.push(`Tour: ${data.tourDestination}`);
+    if (data.tourDuration) lines.push(`Duration: ${data.tourDuration}`);
+    if (data.tourDays) lines.push(`Days: ${data.tourDays}`);
+  }
+
+  if (data.notes) {
+    lines.push("");
+    lines.push(`Notes: ${data.notes}`);
+  }
+
+  lines.push("");
+  if (data.vehicle) lines.push(`Vehicle: ${data.vehicle}`);
+  if (data.price) lines.push(`Estimate: ${data.price}`);
+
+  return lines.join("\n");
+}
+
 const form = document.getElementById('bookingForm');
 
 form.addEventListener('submit', function(e) {
   e.preventDefault();
 
-  const serviceType = document.getElementById("serviceType");
-  const service = serviceType ? serviceType.value : "";
+  const service = getService();
 
+  // transfers require estimate; tours do not
   if (service !== "tour" && selectedPrice === "Pending") {
     alert("Please click Check Price Estimate before confirming.");
     return;
@@ -483,31 +554,60 @@ form.addEventListener('submit', function(e) {
   const time = document.getElementById("time").value;
   const passengers = document.getElementById("passengers").value;
 
-  const tourType = document.getElementById("tourType") ? document.getElementById("tourType").value : "";
   const notes = document.getElementById("notes") ? document.getElementById("notes").value.trim() : "";
 
-  const distanceLine = (lastDistanceKm !== null) ? ` Distance: ${lastDistanceKm.toFixed(1)} km%0A` : "";
+  // Tour fields (from your new booking.html)
+  const tourDestination = document.getElementById("tourDestination") ? document.getElementById("tourDestination").value : "";
+  const tourDuration = document.getElementById("tourDuration") ? document.getElementById("tourDuration").value : "";
+  const tourDaysRaw = document.getElementById("tourDays") ? document.getElementById("tourDays").value : "";
 
-  const text =
-    `New Web Booking%0A%0A` +
-    ` Name: ${encodeURIComponent(name)}%0A` +
-    ` Phone: ${encodeURIComponent(phone)}%0A` +
-    (email ? ` Email: ${encodeURIComponent(email)}%0A` : "") +
-    (service ? ` Service: ${encodeURIComponent(service)}%0A` : "") +
-    (service === "tour" && tourType ? ` Tour Type: ${encodeURIComponent(tourType)}%0A` : "") +
-    (notes ? ` Notes: ${encodeURIComponent(notes)}%0A` : "") +
-    ` Pickup: ${encodeURIComponent(pickup)}%0A` +
-    ` Drop-off: ${encodeURIComponent(dropoff)}%0A` +
-    distanceLine +
-    ` Date: ${encodeURIComponent(date)}%0A` +
-    ` Time: ${encodeURIComponent(time)}%0A` +
-    ` Passengers: ${encodeURIComponent(passengers)}%0A` +
-    ` Selected Ride: ${encodeURIComponent(selectedVehicle)}%0A` +
-    ` Est. Price: ${encodeURIComponent(selectedPrice)}`;
+  const tourDays = (service === "tour" && tourDuration === "Multiple days") ? tourDaysRaw : "";
 
+  const distanceLine = (lastDistanceKm !== null) ? lastDistanceKm.toFixed(1) : "";
+
+  const payload = {
+    service: service || "",
+    name,
+    phone,
+    pickup,
+    dropoff,
+    distance: distanceLine ? distanceLine : "",
+    date,
+    time,
+    passengers,
+    tourDestination: service === "tour" ? tourDestination : "",
+    tourDuration: service === "tour" ? tourDuration : "",
+    tourDays: service === "tour" ? tourDays : "",
+    notes: notes || "",
+    vehicle: selectedVehicle || "",
+    price: selectedPrice || ""
+  };
+
+  const message = buildMessageCompact(payload);
+
+  // user choice: WhatsApp or Email
+  const sendMethod = document.getElementById("sendMethod") ? document.getElementById("sendMethod").value : "whatsapp";
+
+  if (sendMethod === "email") {
+    if (!email) {
+      alert("Please enter your email address to send by email.");
+      return;
+    }
+    const subject = encodeURIComponent("Majusto Booking Request");
+    const body = encodeURIComponent(message);
+
+    // sends to your business email (CHANGE THIS to your real business email)
+    const businessEmail = "Momassdeejaymomass@gmail.com";
+    window.location.href = `mailto:${businessEmail}?subject=${subject}&body=${body}`;
+    return;
+  }
+
+  // Default: WhatsApp
+  const text = encodeURIComponent(message);
   window.open(`https://wa.me/27665922166?text=${text}`, "_blank");
 });
 
+/* expose for inline onclick in HTML */
 window.calculatePrice = calculatePrice;
 window.useMyLocation = useMyLocation;
 window.selectRide = selectRide;

@@ -149,15 +149,53 @@
 </div>
 
 <div class="form-group" id="tourTypeGroup" style="display:none;">
-  <label for="tourType">Tour Type</label>
-  <select id="tourType">
-    <option value="Johannesburg City Tour">Johannesburg City Tour</option>
-    <option value="Soweto Tour">Soweto Tour</option>
-    <option value="Apartheid Museum">Apartheid Museum</option>
-    <option value="Shopping / Mall Tour">Shopping / Mall Tour</option>
-    <option value="Custom (Describe in Notes)">Custom (Describe in Notes)</option>
+  <label for="tourDestination">Tour Destination</label>
+  <select id="tourDestination">
+    <optgroup label="Recommended">
+      <option value="Recommended (Surprise Me)">Recommended (Surprise Me)</option>
+      <option value="Johannesburg Highlights (Recommended)">Johannesburg Highlights (Recommended)</option>
+      <option value="Soweto + Apartheid Museum (Recommended)">Soweto + Apartheid Museum (Recommended)</option>
+      <option value="Cradle of Humankind + Maropeng (Recommended)">Cradle of Humankind + Maropeng (Recommended)</option>
+    </optgroup>
+
+    <optgroup label="Popular Places">
+      <option value="Soweto">Soweto</option>
+      <option value="Apartheid Museum">Apartheid Museum</option>
+      <option value="Cradle of Humankind">Cradle of Humankind</option>
+      <option value="Maropeng Visitor Centre">Maropeng Visitor Centre</option>
+      <option value="Gold Reef City">Gold Reef City</option>
+      <option value="Pretoria City Tour">Pretoria City Tour</option>
+      <option value="Lion & Safari Park">Lion & Safari Park</option>
+      <option value="Hartbeespoort Dam">Hartbeespoort Dam</option>
+      <option value="Lesedi Cultural Village">Lesedi Cultural Village</option>
+      <option value="Pilanesberg National Park">Pilanesberg National Park</option>
+      <option value="Sun City">Sun City</option>
+      <option value="Kruger National Park">Kruger National Park</option>
+    </optgroup>
+
+    <optgroup label="Other">
+      <option value="Other (Write in Notes)">Other (Write in Notes)</option>
+    </optgroup>
   </select>
+
+  <div class="form-row" style="margin-top:12px;">
+    <div class="form-group" style="margin-bottom:0;">
+      <label for="tourDuration">Duration</label>
+      <select id="tourDuration">
+        <option value="2 hours">2 hours</option>
+        <option value="4 hours">4 hours</option>
+        <option value="Full day">Full day</option>
+        <option value="Multiple days">Multiple days</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="tourDaysWrap" style="display:none; margin-bottom:0;">
+      <label for="tourDays">How many days</label>
+      <input type="number" id="tourDays" min="2" value="2">
+    </div>
+  </div>
 </div>
+
 
 <div class="form-group" id="notesGroup" style="display:none;">
   <label for="notes">Notes (optional)</label>
@@ -178,7 +216,7 @@
 
       <div class="form-group" style="position: relative;">
         <label for="dropoff">Drop-Off Location *</label>
-        <input type="text" id="dropoff" required autocomplete="off" placeholder="Type to search (e.g. Sandton)">
+        <input type="text" id="dropoff" autocomplete="off" placeholder="Type to search (e.g. Sandton)">
         <ul id="dropoffSuggestions" class="suggestions-list"></ul>
       </div>
 
@@ -224,17 +262,28 @@
       <div class="form-group">
         <label for="vehicle">Preferred Vehicle</label>
         <select id="vehicle">
-          <option value="Any">Any</option>
-          <option value="Mercedes-Benz Vito">Mercedes-Benz Vito</option>
-          <option value="Mercedes-Benz E-Class">Mercedes-Benz E-Class</option>
-        </select>
+  <option value="Any">Any</option>
+  <option value="Express Sedan (1-3 Pax)">Express Sedan (1-3 Pax)"></option>
+  <option value="Express Van (2-6)">Express Van (2-6 Pax)</option>
+  <option value="Express VIP (Premium)">Express VIP (Premium)</option>
+</select>
+
       </div>
 
       <div id="map" style="height: 300px; width: 100%; border-radius: 8px; margin-bottom: 20px; z-index: 1;"></div>
 
-      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
-        Confirm & Send WhatsApp
-      </button>
+<div class="form-group">
+  <label for="sendMethod">Send Request Via</label>
+  <select id="sendMethod">
+    <option value="whatsapp">WhatsApp</option>
+    <option value="email">Email</option>
+  </select>
+</div>
+
+<button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">
+  Confirm & Send Request
+</button>
+
 
     </form>
   </section>
@@ -269,7 +318,7 @@
       <a href="https://wa.me/27665922166" target="_blank">WhatsApp: 066 592 2166</a>
       <span class="footer-muted">OR Tambo International Airport</span>
       <span class="footer-muted">Johannesburg, South Africa</span>
-      <a href="mailto:info@majusto.com">momassdeejaymomass@gmail.com</a>
+       <a href="mailto:momassdeejaymomass@gmail.com">Email: momassdeejaymomass@gmail.com</a>
     </div>
 
     <div class="footer-col">
