@@ -597,14 +597,14 @@ form.addEventListener('submit', function(e) {
     const body = encodeURIComponent(message);
 
     // sends to your business email (CHANGE THIS to your real business email)
-    const businessEmail = "Momassdeejaymomass@gmail.com";
+    const businessEmail = "justinmnisi6@gmail.com";
     window.location.href = `mailto:${businessEmail}?subject=${subject}&body=${body}`;
     return;
   }
 
   // Default: WhatsApp
   const text = encodeURIComponent(message);
-  window.open(`https://wa.me/27665922166?text=${text}`, "_blank");
+  window.open(`https://wa.me/27678571974?text=${text}`, "_blank");
 });
 
 /* expose for inline onclick in HTML */
