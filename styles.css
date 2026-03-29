@@ -93,8 +93,10 @@ body {
     position: relative;
     min-height: 60vh;
     padding: 5rem 5vw;
-    background-image: url('pexels-pavel-danilyuk-8425052.jpg'); /* replace with a real image later */
-    background-size: cover;
+    background-image: url('expresslogo.png'); /* replace with a real image later */
+  background-size: 50%; /* Adjust this value to zoom out more (100% means original size) */
+
+    /*background-size: cover;*/
     background-position: center;
     display: flex;
     align-items: center;
@@ -266,7 +268,7 @@ body {
 /* Services grid */
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 1.4rem;
 }
 
